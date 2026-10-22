@@ -45,7 +45,8 @@ The frontend can be accessed at `localhost:3000`. If the frontend successfully c
 # Configuration
 The frontend has a configuration file at `frontend/src/config.js` that defines the URL to call the backend. This URL is used on `frontend/src/App.js#12`, where the front end will make the GET call during the initial load of the page.
 
-The backend has a configuration file at `backend/config.js` that defines the host that the frontend will be calling from. This URL is used in the `Access-Control-Allow-Origin` CORS header, read in `backend/index.js#14`
+The backend has a configuration file at `backend/config.js` that defines the host that the frontend will be calling[README.md](https://github.com/user-attachments/files/33799171/README.md)
+ from. This URL is used in the `Access-Control-Allow-Origin` CORS header, read in `backend/index.js#14`
 
 # Optional Extras
 The core requirement for this challenge is to get the provided application up and running for consumption over the public internet. That being said, there are some opportunities in this code challenge to demonstrate your skill sets that are above and beyond the core requirement.
