@@ -22,7 +22,23 @@ flowchart LR
       end
       subgraph PRIV["Private subnets"]
         subgraph ECS["ECS cluster devops-challenge-cluster (Fargate)"]
-          FE[Frontend service<br/>React on port 3000<br/>1 to 3
+          FE[Frontend service<br/>React on port 3000<br/>1 to 3 tasks, CPU autoscaling]
+          BE[Backend service<br/>Express on port 8080<br/>1 task]
+        end
+      end
+    end
+  end
+
+  GA -->|OIDC sign-in| IAM
+  J -->|push images| ECR
+  GA -->|push images| ECR
+  J -->|update service| ECS
+  GA -->|update service| ECS
+  ECR -->|pull image| ECS
+  ALB -->|default| FE
+  ALB -->|"/api/*"| BE
+  ECS -.-> LOGS
+```
 
 ## At a glance
 
