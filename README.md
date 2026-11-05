@@ -8,6 +8,49 @@ A React frontend and an Express backend, deployed publicly on AWS. Terraform bui
   <img src="images/architecture.png" alt="Architecture diagram: React and Express on AWS ECS with Terraform, Jenkins and GitHub Actions" width="900">
 </p>
 
+<details>
+<summary>View the text-based diagram (Mermaid)</summary>
+
+```mermaid
+flowchart LR
+  Dev[Developer] -->|git push| GH[GitHub repository]
+  GH -->|main branch| J
+  GH -->|gitops branch| GA[GitHub Actions]
+  Users[Users] -->|HTTP 80| ALB
+
+  subgraph AWS["AWS region us-west-1, provisioned with Terraform"]
+    J[Jenkins on EC2<br/>runs in Docker]
+    IAM[IAM role<br/>GitHub OIDC, gitops only]
+    ECR[(Amazon ECR<br/>frontend + backend repos)]
+    LOGS[CloudWatch Logs<br/>/ecs/devops-challenge-frontend<br/>/ecs/devops-challenge-backend]
+
+    subgraph VPC["VPC"]
+      subgraph PUB["Public subnets"]
+        ALB[Application Load Balancer<br/>listener on port 80]
+        NAT[NAT gateway]
+      end
+      subgraph PRIV["Private subnets"]
+        subgraph ECS["ECS cluster devops-challenge-cluster (Fargate)"]
+          FE[Frontend service<br/>React on port 3000<br/>1 to 3 tasks, CPU autoscaling]
+          BE[Backend service<br/>Express on port 8080<br/>1 task]
+        end
+      end
+    end
+  end
+
+  GA -->|OIDC sign-in| IAM
+  J -->|push images| ECR
+  GA -->|push images| ECR
+  J -->|update service| ECS
+  GA -->|update service| ECS
+  ECR -->|pull image| ECS
+  ALB -->|default| FE
+  ALB -->|"/api/*"| BE
+  ECS -.-> LOGS
+```
+
+</details>
+
 ## At a glance
 
 | | |
